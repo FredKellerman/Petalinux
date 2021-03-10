@@ -33,4 +33,4 @@ print_dst=$(echo $dst_dir | sed 's/\//\\/g')
 echo "Copied location: $print_dst"
 
 get_timestamp_sd=$(timestamp_sdcard)
-zip zcu216_sdcard_zynqrf_$get_timestamp_sd.zip -j $dst_dir/*
+zip zcu208_sdcard_zynqrf_$get_timestamp_sd.zip -j $dst_dir/*
