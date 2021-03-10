@@ -1,0 +1,50 @@
+From 82b52f9282ff2c7f4be4c7dcb4c32fe7721d3bd0 Mon Sep 17 00:00:00 2001
+From: Conall O'Griofa <conall.o'griofa@xilinx.com>
+Date: Tue, 24 Nov 2020 00:02:00 +0000
+Subject: [EMBEDDEDSW PATCH] rfdc: Clock Distribution
+
+Fixed issue where the clock distribution when distributing to
+ADC tiles from DAC tiles 228 or 231.
+
+Signed-off-by: Conall O'Griofa <conall.o'griofa@xilinx.com>
+---
+ XilinxProcessorIPLib/drivers/rfdc/src/xrfdc_clock.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/XilinxProcessorIPLib/drivers/rfdc/src/xrfdc_clock.c b/XilinxProcessorIPLib/drivers/rfdc/src/xrfdc_clock.c
+index b03f84b..b7ec82b 100644
+--- a/XilinxProcessorIPLib/drivers/rfdc/src/xrfdc_clock.c
++++ b/XilinxProcessorIPLib/drivers/rfdc/src/xrfdc_clock.c
+@@ -52,6 +52,7 @@
+ *                       PLL must be used if using ADC0, ADC3, DAC0 or DAC3 as a
+ *                       clock source.
+ *                       PLL must be used if distributing from DAC to ADC.
++*       cog    11/23/20 Fixed issue when ADC sources from DAC 1 (Tile 229).
+ * </pre>
+ *
+ ******************************************************************************/
+@@ -837,9 +838,7 @@ u32 XRFdc_SetClkDistribution(XRFdc *InstancePtr, XRFdc_Distribution_Settings *Di
+ 		if (DelayRight) {
+ 			Reg = XRFDC_CLK_DISTR_MUX4A_SRC_INT | XRFDC_CLK_DISTR_MUX6_SRC_OFF |
+ 			      XRFDC_CLK_DISTR_MUX7_SRC_OFF | XRFDC_CLK_DISTR_MUX9_SRC_NTH;
+-			if ((DelayRight > 2) && (DelayRight % 2)) {
+-				Reg |= XRFDC_CLK_DISTR_MUX8_SRC_INT;
+-			}
++
+ 			*Delays[Distribution->UpperBound] = DelayOutSourceRight + (DelayRight << 1);
+ 			Distribution->MaxDelay = MAX(Distribution->MaxDelay, (*Delays[Distribution->UpperBound]));
+ 			Distribution->MinDelay = MIN(Distribution->MinDelay, (*Delays[Distribution->UpperBound]));
+@@ -888,9 +887,7 @@ u32 XRFdc_SetClkDistribution(XRFdc *InstancePtr, XRFdc_Distribution_Settings *Di
+ 			FeedBackForInputRight = !FeedBackForInputRight;
+ 			Reg |= XRFDC_CLK_DISTR_MUX6_SRC_NTH | XRFDC_CLK_DISTR_MUX7_SRC_OFF |
+ 			       XRFDC_CLK_DISTR_MUX8_SRC_NTH | XRFDC_CLK_DISTR_MUX9_SRC_NTH;
+-			if ((Delay > 2) && (Delay % 2)) {
+-				Reg |= XRFDC_CLK_DISTR_MUX8_SRC_INT;
+-			}
++
+ 			/* setup clk detect register */
+ 			ClkDetectReg = (XRFDC_CLOCK_DETECT_BOTH
+ 					<< ((XRFDC_CLK_DST_TILE_224 - Distribution->DistributionSource) << 1));
+-- 
+2.7.4
+
