@@ -3,7 +3,7 @@ APP = rftool
 # Add any other object files to this list below
 SRCS=$(wildcard *.c)
 APP_OBJS = $(SRCS:.c=.o)
-CFLAGS += -DXPS_BOARD_ZCU216
+CFLAGS += -DXPS_BOARD_ZCU216 -DXPS_BOARD_ZCU208
 
 all: $(APP)
 
